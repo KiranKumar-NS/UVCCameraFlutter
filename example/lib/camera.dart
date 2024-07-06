@@ -74,7 +74,8 @@ class _CameraTestState extends State<CameraTest> {
               child: const Text('updateResolution'),
               onPressed: () async {
                 await cameraController?.getAllPreviewSizes();
-                cameraController?.updateResolution(PreviewSize(width: 352, height: 288));
+                cameraController
+                    ?.updateResolution(PreviewSize(width: 352, height: 288));
               },
             ),
             TextButton(
@@ -94,12 +95,13 @@ class _CameraTestState extends State<CameraTest> {
                     cameraController?.captureStreamStart();
                   },
                 ),
-                // TextButton(
-                //   child: const Text('captureStreamStop'),
-                //   onPressed: () {
-                //     cameraController?.captureStreamStop();
-                //   },
-                // ),
+                TextButton(
+                  child: const Text('captureStreamStop'),
+                  onPressed: () {
+                    cameraController?.captureStreamStop();
+                    // cameraController?.captureStopVideo();
+                  },
+                ),
               ],
             ),
             Column(
@@ -115,7 +117,9 @@ class _CameraTestState extends State<CameraTest> {
                         height: 80,
                         alignment: Alignment.center,
                         color: Colors.green,
-                        child: images[0] == '' ? Text('takePicture') : Image.file(File(images[0])),
+                        child: images[0] == ''
+                            ? Text('takePicture')
+                            : Image.file(File(images[0])),
                       ),
                     ],
                   ),
@@ -156,7 +160,7 @@ class _CameraTestState extends State<CameraTest> {
   }
 
   captureVideo(int i) async {
-    String? path = await cameraController?.captureVideo();
+    String? path = await cameraController?.captureVideo("ertt");
     if (path != null) {
       videoPath = path;
       setState(() {});

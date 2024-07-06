@@ -58,7 +58,7 @@ class UVCCameraController {
       case "onEncodeData":
         final Map<dynamic, dynamic> args = call.arguments;
         // capture H264 & AAC only
-        debugPrint(args.toString());
+        // debugPrint(args.toString());
         break;
     }
   }
@@ -85,6 +85,10 @@ class UVCCameraController {
 
   void captureStreamStop() {
     _cameraChannel?.invokeMethod('captureStreamStop');
+  }
+
+  void captureVideoStop() {
+    _cameraChannel?.invokeMethod('captureVideoStop');
   }
 
   void startCamera() async {
@@ -120,8 +124,9 @@ class UVCCameraController {
   }
 
   ///录像
-  Future<String?> captureVideo() async {
-    String? path = await _cameraChannel?.invokeMethod('captureVideo');
+  Future<String?> captureVideo(String savePath) async {
+    String? path =
+        await _cameraChannel?.invokeMethod('captureVideo', {"path": savePath});
     debugPrint("path: $path");
     return path;
   }

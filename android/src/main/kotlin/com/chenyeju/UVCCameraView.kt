@@ -45,6 +45,8 @@ import io.flutter.plugin.platform.PlatformView
 import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import android.os.Environment
+
 
 internal class UVCCameraView(
     private val mContext: Context,
@@ -389,7 +391,18 @@ internal class UVCCameraView(
      fun captureVideoStop() {
         getCurrentCamera()?.captureVideoStop()
     }
+
+    private val defaultSaveLocation: String
+    get() {
+        // Example: Save to DCIM/Camera/
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString() + "/Camera/"
+    }
+
     private fun captureVideoStart(callBack: ICaptureCallBack, path: String ?= null, durationInSec: Long = 0L) {
+        //  val savePath = defaultSaveLocation + "video_${System.currentTimeMillis()}.mp4"
+        //  val savePath = defaultSaveLocation + "video_$path.mp4"
+        println("path-------------------------")
+        println(path)
         getCurrentCamera()?.captureVideoStart(callBack, path, durationInSec)
     }
 
@@ -551,8 +564,8 @@ internal class UVCCameraView(
     fun takePicture(callback: UVCStringCallback) {
 
         if (!isCameraOpened()) {
-            callFlutter("摄像头未打开")
-            setCameraERRORState("设备未打开")
+            callFlutter("The camera is not turned on")
+            setCameraERRORState("Device is not turned on")
             return
         }
         captureImage( object : ICaptureCallBack {
@@ -579,29 +592,33 @@ internal class UVCCameraView(
         })
     }
 
-    fun  captureVideo(callback: UVCStringCallback) {
+    fun  captureVideo(callback: UVCStringCallback,savePath:String ) {
         if (isCapturingVideoOrAudio) {
             captureVideoStop()
             return
         }
         if (!isCameraOpened()) {
-            callFlutter("摄像头未打开")
-            setCameraERRORState("设备未打开")
+            callFlutter("The camera is not turned on")
+            setCameraERRORState("Device is not turned on")
             return
         }
 
         captureVideoStart(object : ICaptureCallBack {
             override fun onBegin() {
                 isCapturingVideoOrAudio = true
-                callFlutter("开始录像")
+                callFlutter("Start recording")
             }
 
             override fun onError(error: String?) {
+                println("Media erooooooooooooooooooooooooooooo $error")
                 isCapturingVideoOrAudio = false
                 callback.onError(error ?: "captureVideo error")
+                
             }
 
             override fun onComplete(path: String?) {
+                println("Media completedddddddddddddddddddddddddddddddnn $path")
+                callFlutter("wertyyyyyyyyyyyyyyyyy  ------ $path")
                 if (path != null) {
                     callback.onSuccess(path)
                     MediaScannerConnection.scanFile(view.context, arrayOf(path), null) {
@@ -611,12 +628,12 @@ internal class UVCCameraView(
                     isCapturingVideoOrAudio = false
                 } else {
                     isCapturingVideoOrAudio = false
-                    callback.onError("未能保存视频")
+                    callback.onError("Failed to save video")
 
                 }
             }
 
-        })
+        },savePath)
 
     }
 

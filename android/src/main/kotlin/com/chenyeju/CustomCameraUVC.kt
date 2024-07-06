@@ -242,6 +242,7 @@ class CameraUVC(ctx: Context, device: UsbDevice, private val params: Any?
         if (Utils.debugCamera) {
             Logger.i(TAG, " stop preview, name = ${device.deviceName}")
         }
+     
     }
 
     override fun captureImageInternal(savePath: String?, callback: ICaptureCallBack) {

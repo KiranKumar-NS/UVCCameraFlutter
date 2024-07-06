@@ -91,6 +91,7 @@ class FlutterUVCCameraPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             }
 
             "captureVideo" -> {
+                val param:String = call.argument<String>("path")?:""
                 mUVCCameraViewFactory.captureVideo(
                     object : UVCStringCallback {
                         override fun onSuccess(path: String) {
@@ -99,8 +100,11 @@ class FlutterUVCCameraPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                         override fun onError(error: String) {
                             result.error("error", error, error)
                         }
-                    }
+                    },param
                 )
+            }
+            "captureVideoStop" -> {
+                mUVCCameraViewFactory.captureVideoStop()
             }
             "captureStreamStart" -> {
                 mUVCCameraViewFactory.captureStreamStart()
